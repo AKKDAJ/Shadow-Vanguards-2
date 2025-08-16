@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>上訴 - Shadow Vanguards</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="container">
+    
+<h1 data-i18n="appeal">上訴</h1>
+<div class="card">
+  <div class="grid grid-2">
+    <input id="aname" class="input" placeholder="你的名字">
+    <input id="atitle" class="input" placeholder="主旨">
+  </div>
+  <textarea id="areason" rows="5" class="input" style="margin-top:10px" placeholder="上訴內容"></textarea>
+  <div style="margin-top:10px"><input id="afile" type="file"></div>
+  <div style="margin-top:10px"><button id="asend" data-i18n="submit">送出</button></div>
+</div>
+<div class="card">
+  <h2>我的上訴</h2>
+  <ul id="alist"></ul>
+</div>
+
+  </div>
+  <script src="js/main.js"></script>
+  <script>
+  
+function render(){
+  const me = lsGet('session', {u:'guest'}).u;
+  const arr = lsGet('appeals', []).filter(a=>a.by===me);
+  alist.innerHTML = arr.map(a=>`<li>${a.title} - ${a.reason}</li>`).join('');
+}
+asend.onclick = ()=>{
+  const me = lsGet('session', {u:'guest'}).u;
+  const item = { by:me, name:aname.value, title:atitle.value, reason:areason.value, time:Date.now() };
+  const arr = lsGet('appeals', []); arr.push(item); lsSet('appeals', arr);
+  alert('已送出'); render();
+};
+render();
+
+  </script>
+</body>
+</html>

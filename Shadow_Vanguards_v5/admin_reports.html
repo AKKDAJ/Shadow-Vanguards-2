@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>受理投訴（管理員） - Shadow Vanguards</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="container">
+    
+<h1>受理投訴</h1>
+<div class="card">
+  <table class="table"><thead><tr><th>用戶</th><th>主旨</th><th>內容</th><th>動作</th></tr></thead><tbody id="rbody"></tbody></table>
+</div>
+
+  </div>
+  <script src="js/main.js"></script>
+  <script>
+  
+const s3 = lsGet('session', null); if(!s3 || (s3.role!=='admin' && s3.role!=='owner')){ alert('需要管理員權限'); location.href='index.html' }
+function renderR(){
+  const arr = lsGet('reports', []);
+  rbody.innerHTML = arr.map((a,i)=>`<tr><td>${a.by}</td><td>${a.title}</td><td>${a.content}</td><td><button onclick="acceptR(${i})">受理</button> <button onclick="delR(${i})">刪除</button></td></tr>`).join('');
+}
+function acceptR(i){ const logs=lsGet('logs',[]); logs.push({type:'report_accept', index:i, by:s3.u, time:new Date().toISOString()}); lsSet('logs',logs); alert('已受理'); }
+function delR(i){ const arr=lsGet('reports',[]); arr.splice(i,1); lsSet('reports',arr); renderR(); }
+renderR();
+
+  </script>
+</body>
+</html>

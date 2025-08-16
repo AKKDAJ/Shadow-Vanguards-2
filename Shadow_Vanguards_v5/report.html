@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>投訴 - Shadow Vanguards</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="container">
+    
+<h1 data-i18n="report">投訴</h1>
+<div class="card">
+  <div class="grid grid-2">
+    <input id="rname" class="input" placeholder="目標帳號">
+    <input id="rtitle" class="input" placeholder="主旨">
+  </div>
+  <textarea id="rcontent" rows="5" class="input" style="margin-top:10px" placeholder="投訴內容"></textarea>
+  <div style="margin-top:10px"><input id="rfile" type="file"></div>
+  <div style="margin-top:10px"><button id="rsend" data-i18n="submit">送出</button></div>
+</div>
+<div class="card">
+  <h2>我提出的投訴</h2>
+  <ul id="rlist"></ul>
+</div>
+
+  </div>
+  <script src="js/main.js"></script>
+  <script>
+  
+function renderR(){
+  const me = lsGet('session', {u:'guest'}).u;
+  const arr = lsGet('reports', []).filter(a=>a.by===me);
+  rlist.innerHTML = arr.map(a=>`<li>${a.title} - ${a.content}</li>`).join('');
+}
+rsend.onclick = ()=>{
+  const me = lsGet('session', {u:'guest'}).u;
+  const item = { by:me, name:rname.value, title:rtitle.value, content:rcontent.value, time:Date.now() };
+  const arr = lsGet('reports', []); arr.push(item); lsSet('reports', arr);
+  alert('已送出'); renderR();
+};
+renderR();
+
+  </script>
+</body>
+</html>

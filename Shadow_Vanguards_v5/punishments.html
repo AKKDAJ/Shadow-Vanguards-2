@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>懲處排行榜 - Shadow Vanguards</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="container">
+    
+<h1 data-i18n="punishBoard">懲處排行榜</h1>
+<table class="table">
+  <thead><tr><th>名稱</th><th>原因</th></tr></thead>
+  <tbody id="punishmentRows"></tbody>
+</table>
+<div class="card">
+  <h2>新增（管理員/擁有者）</h2>
+  <div class="grid grid-2">
+    <input id="pname" class="input" placeholder="名稱">
+    <input id="preason" class="input" placeholder="原因">
+  </div>
+  <div style="margin-top:10px"><button id="padd">新增</button></div>
+</div>
+
+  </div>
+  <script src="js/main.js"></script>
+  <script>
+  
+const sess = lsGet('session', null);
+const allowedAdd = sess && (sess.role==='admin' || sess.role==='owner');
+document.getElementById('padd').disabled = !allowedAdd;
+if(!allowedAdd){ document.getElementById('padd').title='僅管理員或擁有者可新增'; }
+function render(){
+  const arr = lsGet('punishments', []);
+  document.getElementById('punishmentRows').innerHTML = arr.map(p=>`<tr><td>${p.name}</td><td>${p.reason}</td></tr>`).join('');
+}
+render();
+document.getElementById('padd').onclick = ()=>{
+  if(!allowedAdd) return alert('權限不足');
+  const name = document.getElementById('pname').value.trim();
+  const reason = document.getElementById('preason').value.trim();
+  if(!name||!reason) return alert('請輸入完整資料');
+  const arr = lsGet('punishments', []); arr.push({name, reason}); lsSet('punishments', arr);
+  render();
+};
+
+  </script>
+</body>
+</html>

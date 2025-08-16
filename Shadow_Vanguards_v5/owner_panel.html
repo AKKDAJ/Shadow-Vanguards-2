@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>擁有者控制台 - Shadow Vanguards</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="container">
+    
+<h1>擁有者控制台</h1>
+<p class="subtitle">僅擁有者可檢視日誌、管理管理員、刪除懲處。</p>
+<div class="grid grid-3">
+  <div class="card">
+    <h2>新增管理員</h2>
+    <div class="grid">
+      <input id="au" class="input" placeholder="帳號">
+      <input id="ap" class="input" placeholder="密碼">
+      <button id="addAdmin">新增</button>
+    </div>
+  </div>
+  <div class="card">
+    <h2>管理員列表</h2>
+    <ul id="alist"></ul>
+  </div>
+  <div class="card">
+    <h2>登入與操作日誌</h2>
+    <ul id="logs"></ul>
+  </div>
+</div>
+<div class="card">
+  <h2>懲處資料（可刪除）</h2>
+  <table class="table"><thead><tr><th>名稱</th><th>原因</th><th>動作</th></tr></thead><tbody id="prow"></tbody></table>
+</div>
+
+  </div>
+  <script src="js/main.js"></script>
+  <script>
+  
+const s4 = lsGet('session', null); if(!s4 || s4.role!=='owner'){ alert('需要擁有者權限'); location.href='index.html' }
+function renderAdmins(){
+  const arr=lsGet('users',[]).filter(u=>u.role==='admin');
+  alist.innerHTML = arr.map((u,i)=>`<li>${u.u} <button onclick="delAdmin('${u.u}')">刪除</button></li>`).join('');
+}
+function delAdmin(user){
+  let arr=lsGet('users',[]);
+  arr = arr.filter(x=>!(x.u===user && x.role==='admin'));
+  lsSet('users',arr); renderAdmins();
+}
+addAdmin.onclick = ()=>{
+  const u=au.value.trim(), p=ap.value.trim(); if(!u||!p) return alert('請輸入');
+  const arr=lsGet('users',[]);
+  if(arr.find(x=>x.u===u)) return alert('帳號已存在');
+  arr.push({u, p, role:'admin'}); lsSet('users',arr); renderAdmins();
+};
+function renderLogs(){
+  const logsArr = lsGet('logs', []);
+  logs.innerHTML = logsArr.map(l=>`<li>[${l.type}] ${l.by||l.user||''} ${l.time||''}</li>`).join('');
+}
+function renderPunish(){
+  const arr=lsGet('punishments',[]);
+  prow.innerHTML = arr.map((p,i)=>`<tr><td>${p.name}</td><td>${p.reason}</td><td><button onclick="rm(${i})">刪除</button></td></tr>`).join('');
+}
+function rm(i){
+  const arr=lsGet('punishments',[]); arr.splice(i,1); lsSet('punishments',arr); renderPunish();
+}
+renderAdmins(); renderLogs(); renderPunish();
+
+  </script>
+</body>
+</html>

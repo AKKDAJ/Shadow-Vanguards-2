@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>新增懲處（管理員） - Shadow Vanguards</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="container">
+    
+<h1>新增懲處（管理員）</h1>
+<div class="card">
+  <div class="grid grid-2">
+    <input id="name" class="input" placeholder="違規者名稱">
+    <input id="reason" class="input" placeholder="違規原因">
+  </div>
+  <div style="margin-top:10px"><button id="addbtn">新增</button></div>
+</div>
+<div class="card">
+  <h2>懲處列表</h2>
+  <table class="table"><thead><tr><th>名稱</th><th>原因</th></tr></thead><tbody id="rows"></tbody></table>
+  <p class="subtitle">※ 管理員不可刪除懲處。</p>
+</div>
+
+  </div>
+  <script src="js/main.js"></script>
+  <script>
+  
+const s = lsGet('session', null); if(!s || (s.role!=='admin' && s.role!=='owner')){ alert('需要管理員權限'); location.href='index.html' }
+function render(){ const arr = lsGet('punishments', []); rows.innerHTML = arr.map(p=>`<tr><td>${p.name}</td><td>${p.reason}</td></tr>`).join(''); }
+addbtn.onclick = ()=>{
+  const nameV=name.value.trim(), reasonV=reason.value.trim();
+  if(!nameV||!reasonV) return alert('請輸入完整資料');
+  const arr=lsGet('punishments',[]); arr.push({name:nameV, reason:reasonV}); lsSet('punishments',arr); render();
+};
+render();
+
+  </script>
+</body>
+</html>

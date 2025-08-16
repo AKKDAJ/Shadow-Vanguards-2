@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>商城 - Shadow Vanguards</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="container">
+    
+<h1 data-i18n="shop">商城</h1>
+<div class="grid grid-3" id="items"></div>
+<div class="card">
+  <h2 data-i18n="cart">購物車</h2>
+  <ul id="cartList"></ul>
+</div>
+
+  </div>
+  <script src="js/main.js"></script>
+  <script>
+  
+const catalog=[{name:'黑帽 Black Cap',price:100},{name:'戰術背心 Tactical Vest',price:320},{name:'暗影徽章 Shadow Patch',price:60}];
+function renderItems(){
+  items.innerHTML=catalog.map((i,idx)=>`
+    <div class="card">
+      <h3>${i.name}</h3>
+      <div class="subtitle">$${i.price}</div>
+      <button onclick="addCart(${idx})">加入購物車</button>
+    </div>`).join('');
+}
+function addCart(i){
+  const cart=lsGet('cart',[]); cart.push(catalog[i]); lsSet('cart',cart); renderCart();
+}
+function renderCart(){
+  const cart=lsGet('cart',[]);
+  cartList.innerHTML = cart.map((c,i)=>`<li>${c.name} - $${c.price} <button onclick="removeCart(${i})">移除</button></li>`).join('');
+}
+function removeCart(i){
+  const cart=lsGet('cart',[]); cart.splice(i,1); lsSet('cart',cart); renderCart();
+}
+renderItems(); renderCart();
+
+  </script>
+</body>
+</html>

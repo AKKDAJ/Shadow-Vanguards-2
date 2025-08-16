@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>受理上訴（管理員） - Shadow Vanguards</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="container">
+    
+<h1>受理上訴</h1>
+<div class="card">
+  <table class="table"><thead><tr><th>用戶</th><th>主旨</th><th>內容</th><th>動作</th></tr></thead><tbody id="alist"></tbody></table>
+</div>
+
+  </div>
+  <script src="js/main.js"></script>
+  <script>
+  
+const s2 = lsGet('session', null); if(!s2 || (s2.role!=='admin' && s2.role!=='owner')){ alert('需要管理員權限'); location.href='index.html' }
+function renderA(){
+  const arr = lsGet('appeals', []);
+  alist.innerHTML = arr.map((a,i)=>`<tr><td>${a.by}</td><td>${a.title}</td><td>${a.reason}</td><td><button onclick="accept(${i})">受理</button> <button onclick="delA(${i})">刪除</button></td></tr>`).join('');
+}
+function accept(i){ const logs=lsGet('logs',[]); logs.push({type:'appeal_accept', index:i, by:s2.u, time:new Date().toISOString()}); lsSet('logs',logs); alert('已受理'); }
+function delA(i){ const arr=lsGet('appeals',[]); arr.splice(i,1); lsSet('appeals',arr); renderA(); }
+renderA();
+
+  </script>
+</body>
+</html>
